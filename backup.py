@@ -5,11 +5,8 @@ from dropbox import rest
 
 from datetime import datetime
 
-
-
-
 def end_wrong_syntax():
-  print "wrong argv python run.py backup|restore config_file_path upload_file_path"
+  print "wrong argv python backup.py config_file_path upload_file_path"
   sys.exit()  
 
 try:
@@ -24,18 +21,12 @@ try:
   os.chdir(current_path)
 
   print sys.argv
-  if len(sys.argv) != 4:
+  if len(sys.argv) != 3:
     end_wrong_syntax()
 
+  config_file_path = sys.argv[1]
+  upload_file_path = sys.argv[2]
 
-  option = sys.argv[1]
-  config_file_path = sys.argv[2]
-  upload_file_path = sys.argv[3]
-
-  if option not in ['backup','restore']:
-    end_wrong_syntax()
-  
-  print "option is "  + option
 
   if  os.path.isfile(config_file_path) is False:
     print "not found config file: "+config_file_path
@@ -74,7 +65,7 @@ try:
 
   file_size =  os.path.getsize( upload_file_path )
   print "file_size is " + str(file_size) 
-  
+
   uploader = client.get_chunked_uploader(file_instance, file_size)
   
   while uploader.offset < file_size:
@@ -91,11 +82,7 @@ try:
   print "your file is backuped to dropbox successfully"
 
 
-  f = open('test.jpg', 'rb')
-  response = client.put_file('/Backup/backup3.jpg', f)
-  print "uploaded:", response
-
-
+  #Get all files on this backup folder
   folder_metadata = client.metadata( backup_folder  )
   
   file_list = []
@@ -127,9 +114,6 @@ try:
       client.file_delete(_file['path'])
 
     print "Removed all old files"
-
-
-
 
   # f, metadata = client.get_file_and_metadata('/Backup/backup2.jpg')
   # out = open('hey.jpg', 'wb')
