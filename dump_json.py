@@ -68,6 +68,10 @@ try:
   for file_item in folder_metadata['contents']:
 
     path = file_item['path']
+
+    if path[-3:] == "pdf":
+      continue
+
     path = path.replace("/Public/","")
     arr_temp = path.split("/")
 
@@ -81,9 +85,16 @@ try:
     if dot_position != -1:
       file_name = file_name[:dot_position]
 
+    audio_link = 'https://dl.dropboxusercontent.com/u/%s/%s' % ( user_id, path )
+    pdf_dropbox_link = audio_link.replace(".mp3",'.pdf')
+    pdf_link = "<a href='%s' target='_blank' >here</a>" %( pdf_dropbox_link  )
+
+    emotion = "You can click %s to show to the transcript" % ( pdf_link )
+
     return_arr.append({
       'title'  : file_name,
-      'link'   : 'https://dl.dropboxusercontent.com/u/%s/%s' % ( user_id, path )
+      'link'   : audio_link,
+      'emotion': emotion
     })
   print "Please copy below json string"
   print json.dumps( return_arr )
